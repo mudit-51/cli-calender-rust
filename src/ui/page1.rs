@@ -1,3 +1,4 @@
+use chrono::Datelike;
 use ratatui::{
     self,
     prelude::{Constraint, CrosstermBackend, Layout},
@@ -23,10 +24,9 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
         .split(f.size());
 
     for i in 0..7 {
-        
         let inner = Layout::default()
             .direction(ratatui::prelude::Direction::Vertical)
-            .constraints(vec![Constraint::Percentage(50), Constraint::Percentage(50)])
+            .constraints(vec![Constraint::Percentage(5), Constraint::Percentage(10)])
             .horizontal_margin(1)
             .vertical_margin(1)
             .split(outer[i]);
@@ -34,7 +34,7 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
         match app.get_days().get(i) {
             Some(x) => {
                 let block = Block::default().borders(Borders::ALL);
-                
+
                 if x.is_today() {
                     f.render_widget(block.fg(Color::LightMagenta), outer[i]);
                 } else {
@@ -42,10 +42,15 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
                 }
 
                 f.render_widget(
-                    Paragraph::new(x.get_date_string().as_str())
+                    Paragraph::new(x.get_date().weekday().to_string())
                         .alignment(ratatui::prelude::Alignment::Center),
                     inner[0],
-                )
+                );
+                f.render_widget(
+                    Paragraph::new(x.get_date().to_string())
+                        .alignment(ratatui::prelude::Alignment::Center),
+                    inner[1],
+                );
             }
             None => panic!("Day not found"),
         }

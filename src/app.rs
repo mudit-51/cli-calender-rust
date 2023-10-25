@@ -1,4 +1,4 @@
-use chrono::prelude::*;
+use chrono::{prelude::*, Days, Months};
 
 pub struct App {
     page: i32,
@@ -7,8 +7,8 @@ pub struct App {
     days: Vec<Day>,
 }
 
-pub struct Day{
-    date: String,
+pub struct Day {
+    date: NaiveDate,
     today: bool,
 }
 
@@ -21,9 +21,15 @@ impl App {
 
         for _i in 0..7 {
             if days == today {
-                temp.push(Day { date: days.to_string(), today: true });
+                temp.push(Day {
+                    date: days,
+                    today: true,
+                });
             } else {
-                temp.push(Day { date: days.to_string(), today: false });
+                temp.push(Day {
+                    date: days,
+                    today: false,
+                });
             }
             days = days.succ_opt().unwrap();
         }
@@ -59,16 +65,88 @@ impl App {
     pub fn get_page(&self) -> i32 {
         self.page
     }
-    pub fn get_days(&self) -> &Vec<Day>{
+    pub fn get_days(&self) -> &Vec<Day> {
         &self.days
+    }
+    pub fn next_week(&mut self) {
+        let mut temp: Vec<Day> = Vec::new();
+        for i in &self.days {
+            let next_day = i.date.checked_add_days(Days::new(7)).unwrap();
+            if next_day == chrono::Local::now().date_naive() {
+                temp.push(Day {
+                    date: next_day,
+                    today: true,
+                });
+            } else {
+                temp.push(Day {
+                    date: next_day,
+                    today: false,
+                });
+            }
+        }
+        self.days = temp;
+    }
+    pub fn next_month(&mut self) {
+        let mut temp: Vec<Day> = Vec::new();
+        for i in &self.days {
+            let next_day = i.date.checked_add_months(Months::new(1)).unwrap();
+            if next_day == chrono::Local::now().date_naive() {
+                temp.push(Day {
+                    date: next_day,
+                    today: true,
+                });
+            } else {
+                temp.push(Day {
+                    date: next_day,
+                    today: false,
+                });
+            }
+        }
+        self.days = temp;
+    }
+    pub fn prev_week(&mut self) {
+        let mut temp: Vec<Day> = Vec::new();
+        for i in &self.days {
+            let next_day = i.date.checked_sub_days(Days::new(7)).unwrap();
+            if next_day == chrono::Local::now().date_naive() {
+                temp.push(Day {
+                    date: next_day,
+                    today: true,
+                });
+            } else {
+                temp.push(Day {
+                    date: next_day,
+                    today: false,
+                });
+            }
+        }
+        self.days = temp;
+    }
+    pub fn prev_month(&mut self) {
+        let mut temp: Vec<Day> = Vec::new();
+        for i in &self.days {
+            let next_day = i.date.checked_sub_months(Months::new(1)).unwrap();
+            if next_day == chrono::Local::now().date_naive() {
+                temp.push(Day {
+                    date: next_day,
+                    today: true,
+                });
+            } else {
+                temp.push(Day {
+                    date: next_day,
+                    today: false,
+                });
+            }
+        }
+        self.days = temp;
     }
 }
 
-impl Day{
-    pub fn get_date_string(&self) -> &String{
+impl Day {
+    pub fn get_date(&self) -> &NaiveDate {
         &self.date
     }
-    pub fn is_today(&self) -> bool{
+    pub fn is_today(&self) -> bool {
         self.today
     }
 }
