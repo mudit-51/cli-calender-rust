@@ -16,7 +16,7 @@ impl App {
     pub fn new() -> App {
         let mut temp: Vec<Day> = Vec::new();
 
-        let today = chrono::Local::now().date_naive().weekday();
+        let today = chrono::Local::now().date_naive();
         let mut days = today.week(Weekday::Mon).first_day();
 
         for _i in 0..7 {
