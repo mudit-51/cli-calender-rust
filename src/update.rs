@@ -31,7 +31,9 @@ pub fn udpate_0(app: &mut App) {
                         } else {
                             app.next_week();
                         }
-                    },
+                    }
+                    event::KeyCode::Up => app.set_scroll_vertical(-3),
+                    event::KeyCode::Down => app.set_scroll_vertical(3),
                     event::KeyCode::Backspace => app.text_pop(),
                     event::KeyCode::Delete => app.quit(),
                     _ => {}

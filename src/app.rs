@@ -5,6 +5,7 @@ pub struct App {
     should_quit: bool,
     page_text: String,
     days: Vec<Day>,
+    scroll_state: (u16, u16),
 }
 
 pub struct Day {
@@ -38,6 +39,7 @@ impl App {
             should_quit: false,
             page_text: String::new(),
             days: temp,
+            scroll_state: (0, 0),
         }
     }
     pub fn get_page_text(&self) -> String {
@@ -67,6 +69,23 @@ impl App {
     }
     pub fn get_days(&self) -> &Vec<Day> {
         &self.days
+    }
+    pub fn get_scroll(&self) -> (u16, u16) {
+        self.scroll_state
+    }
+    pub fn set_scroll_vertical(&mut self, offset: i16) {
+        let temp = self.scroll_state.0;
+        match temp.checked_add_signed(offset) {
+            Some(x) => self.scroll_state = (x, self.scroll_state.1),
+            None => self.scroll_state = (temp, self.scroll_state.1),
+        }
+    }
+    pub fn set_scroll_horizontal(&mut self, offset: i16) {
+        let temp = self.scroll_state.1;
+        match temp.checked_add_signed(offset) {
+            Some(x) => self.scroll_state = (self.scroll_state.0, x),
+            None => self.scroll_state = (self.scroll_state.0, temp),
+        }
     }
     pub fn next_week(&mut self) {
         let mut temp: Vec<Day> = Vec::new();
