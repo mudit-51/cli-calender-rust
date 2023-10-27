@@ -11,28 +11,24 @@ pub struct App {
 pub struct Day {
     date: NaiveDate,
     today: bool,
+    tasks: Option<Vec<String>>,
 }
+
 
 impl App {
     pub fn new() -> App {
         let mut temp: Vec<Day> = Vec::new();
 
         let today = chrono::Local::now().date_naive();
-        let mut days = today.week(Weekday::Mon).first_day();
+        let mut day = today.week(Weekday::Mon).first_day();
 
         for _i in 0..7 {
-            if days == today {
-                temp.push(Day {
-                    date: days,
-                    today: true,
-                });
-            } else {
-                temp.push(Day {
-                    date: days,
-                    today: false,
-                });
-            }
-            days = days.succ_opt().unwrap();
+            temp.push(Day {
+                date: day,
+                today: day==today,
+                tasks: None,
+            });
+            day = day.succ_opt().unwrap();
         }
         App {
             page: 0,
@@ -91,17 +87,11 @@ impl App {
         let mut temp: Vec<Day> = Vec::new();
         for i in &self.days {
             let next_day = i.date.checked_add_days(Days::new(7)).unwrap();
-            if next_day == chrono::Local::now().date_naive() {
-                temp.push(Day {
-                    date: next_day,
-                    today: true,
-                });
-            } else {
-                temp.push(Day {
-                    date: next_day,
-                    today: false,
-                });
-            }
+            temp.push(Day {
+                date: next_day,
+                today: next_day == chrono::Local::now().date_naive(),
+                tasks: None,
+            });
         }
         self.days = temp;
     }
@@ -109,17 +99,11 @@ impl App {
         let mut temp: Vec<Day> = Vec::new();
         for i in &self.days {
             let next_day = i.date.checked_add_months(Months::new(1)).unwrap();
-            if next_day == chrono::Local::now().date_naive() {
-                temp.push(Day {
-                    date: next_day,
-                    today: true,
-                });
-            } else {
-                temp.push(Day {
-                    date: next_day,
-                    today: false,
-                });
-            }
+            temp.push(Day {
+                date: next_day,
+                today: next_day == chrono::Local::now().date_naive(),
+                tasks: None,
+            });
         }
         self.days = temp;
     }
@@ -127,17 +111,11 @@ impl App {
         let mut temp: Vec<Day> = Vec::new();
         for i in &self.days {
             let next_day = i.date.checked_sub_days(Days::new(7)).unwrap();
-            if next_day == chrono::Local::now().date_naive() {
-                temp.push(Day {
-                    date: next_day,
-                    today: true,
-                });
-            } else {
-                temp.push(Day {
-                    date: next_day,
-                    today: false,
-                });
-            }
+            temp.push(Day {
+                date: next_day,
+                today: next_day == chrono::Local::now().date_naive(),
+                tasks: None,
+            });
         }
         self.days = temp;
     }
@@ -145,17 +123,11 @@ impl App {
         let mut temp: Vec<Day> = Vec::new();
         for i in &self.days {
             let next_day = i.date.checked_sub_months(Months::new(1)).unwrap();
-            if next_day == chrono::Local::now().date_naive() {
-                temp.push(Day {
-                    date: next_day,
-                    today: true,
-                });
-            } else {
-                temp.push(Day {
-                    date: next_day,
-                    today: false,
-                });
-            }
+            temp.push(Day {
+                date: next_day,
+                today: next_day == chrono::Local::now().date_naive(),
+                tasks: None,
+            });
         }
         self.days = temp;
     }
@@ -167,5 +139,8 @@ impl Day {
     }
     pub fn is_today(&self) -> bool {
         self.today
+    }
+    pub fn get_tasks(&self) -> &Option<Vec<String>>{
+        &self.tasks
     }
 }

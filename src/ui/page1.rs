@@ -35,7 +35,6 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
             .vertical_margin(1)
             .split(outer[i]);
 
-        let temp = vec![Line::from("--Line 1 Line 1 Line 1 Line 1 Line 1 Line 1 Line 1 Line 1 Line 1 Line 1 Line 1 Line 1"),Line::from("--Line 2 Line 2 Line 2 Line 2 Line 2 Line 2 Line 2 Line 2 Line 2 Line 2 Line 2 Line 2"),Line::from("--Line 3 Line 3 Line 3 Line 3 Line 3 Line 3 Line 3 Line 3 Line 3 Line 3 Line 3 Line 3"),Line::from("--Line 4 Line 4 Line 4 Line 4 Line 4 Line 4 Line 4 Line 4 Line 4 Line 4 Line 4 Line 4"),Line::from("--Line 5 Line 5 Line 5 Line 5 Line 5 Line 5 Line 5 Line 5 Line 5 Line 5 Line 5 Line 5"),Line::from("--Line 6 Line 6 Line 6 Line 6 Line 6 Line 6 Line 6 Line 6 Line 6 Line 6 Line 6 Line 6"),Line::from("--Line 7 Line 7 Line 7 Line 7 Line 7 Line 7 Line 7 Line 7 Line 7 Line 7 Line 7 Line 7"),Line::from("--Line 8 Line 8 Line 8 Line 8 Line 8 Line 8 Line 8 Line 8 Line 8 Line 8 Line 8 Line 8")];
         match app.get_days().get(i) {
             Some(x) => {
                 let block = Block::default().borders(Borders::ALL);
@@ -57,12 +56,26 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
                         .block(Block::default().borders(Borders::BOTTOM)),
                     inner[1],
                 );
-                f.render_widget(
-                    Paragraph::new(temp)
-                        .wrap(Wrap { trim: false })
-                        .scroll(app.get_scroll()),
-                    inner[2],
-                );
+                match x.get_tasks() {
+                    Some(task) => {
+                        let task_text = task.into_iter().map(|j| Line::from(j.as_str()));
+                        let z: Vec<Line> = task_text.collect();
+                        f.render_widget(
+                            Paragraph::new(z)
+                                .wrap(Wrap { trim: false })
+                                .scroll(app.get_scroll()),
+                            inner[2],
+                        );
+                    }
+                    None => {
+                        f.render_widget(
+                            Paragraph::new("No tasks scheduled")
+                                .wrap(Wrap { trim: false })
+                                .scroll(app.get_scroll()),
+                            inner[2],
+                        );
+                    }
+                }
             }
             None => panic!("Day not found"),
         }
