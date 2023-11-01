@@ -58,8 +58,11 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
                 );
                 match x.get_tasks() {
                     Some(task) => {
-                        let task_text = task.into_iter().map(|j| Line::from(j.as_str()));
-                        let z: Vec<Line> = task_text.collect();
+                        let task_text = task.as_array().unwrap();
+                        let mut z: Vec<Line> = Vec::new();
+                        for i in task_text {
+                            z.push(Line::from(i.to_string()));
+                        }
                         f.render_widget(
                             Paragraph::new(z)
                                 .wrap(Wrap { trim: false })

@@ -1,4 +1,7 @@
+use std::fs::File;
+
 use chrono::{prelude::*, Days, Months};
+use serde_json::Value;
 
 pub struct App {
     page: i32,
@@ -6,14 +9,14 @@ pub struct App {
     page_text: String,
     days: Vec<Day>,
     scroll_state: (u16, u16),
+    task_json: serde_json::Value,
 }
 
 pub struct Day {
     date: NaiveDate,
     today: bool,
-    tasks: Option<Vec<String>>,
+    tasks: Option<Value>,
 }
-
 
 impl App {
     pub fn new() -> App {
@@ -22,11 +25,20 @@ impl App {
         let today = chrono::Local::now().date_naive();
         let mut day = today.week(Weekday::Mon).first_day();
 
+        let json: serde_json::Value =
+            serde_json::from_reader(File::open("data.json").unwrap()).unwrap();
+
+        let x = json.as_object().unwrap();
+
         for _i in 0..7 {
+            let tasks = match x.get(&day.to_string()) {
+                Some(x) => Some(x.clone().to_owned()),
+                None => None,
+            };
             temp.push(Day {
                 date: day,
-                today: day==today,
-                tasks: None,
+                today: day == today,
+                tasks,
             });
             day = day.succ_opt().unwrap();
         }
@@ -36,6 +48,7 @@ impl App {
             page_text: String::new(),
             days: temp,
             scroll_state: (0, 0),
+            task_json: json,
         }
     }
     pub fn get_page_text(&self) -> String {
@@ -84,49 +97,73 @@ impl App {
         }
     }
     pub fn next_week(&mut self) {
+        let obj = self.task_json.as_object().unwrap();
+
         let mut temp: Vec<Day> = Vec::new();
         for i in &self.days {
             let next_day = i.date.checked_add_days(Days::new(7)).unwrap();
+            let tasks = match obj.get(&next_day.to_string()) {
+                Some(x) => Some(x.clone().to_owned()),
+                None => None,
+            };
             temp.push(Day {
                 date: next_day,
                 today: next_day == chrono::Local::now().date_naive(),
-                tasks: None,
+                tasks,
             });
         }
         self.days = temp;
     }
     pub fn next_month(&mut self) {
+        let obj = self.task_json.as_object().unwrap();
+
         let mut temp: Vec<Day> = Vec::new();
         for i in &self.days {
             let next_day = i.date.checked_add_months(Months::new(1)).unwrap();
+            let tasks = match obj.get(&next_day.to_string()) {
+                Some(x) => Some(x.clone().to_owned()),
+                None => None,
+            };
             temp.push(Day {
                 date: next_day,
                 today: next_day == chrono::Local::now().date_naive(),
-                tasks: None,
+                tasks,
             });
         }
         self.days = temp;
     }
     pub fn prev_week(&mut self) {
+        let obj = self.task_json.as_object().unwrap();
+
         let mut temp: Vec<Day> = Vec::new();
         for i in &self.days {
             let next_day = i.date.checked_sub_days(Days::new(7)).unwrap();
+            let tasks = match obj.get(&next_day.to_string()) {
+                Some(x) => Some(x.clone().to_owned()),
+                None => None,
+            };
             temp.push(Day {
                 date: next_day,
                 today: next_day == chrono::Local::now().date_naive(),
-                tasks: None,
+                tasks,
             });
         }
         self.days = temp;
     }
     pub fn prev_month(&mut self) {
+        let obj = self.task_json.as_object().unwrap();
+
         let mut temp: Vec<Day> = Vec::new();
         for i in &self.days {
             let next_day = i.date.checked_sub_months(Months::new(1)).unwrap();
+            let tasks = match obj.get(&next_day.to_string()) {
+                Some(x) => Some(x.clone().to_owned()),
+                None => None,
+            };
             temp.push(Day {
                 date: next_day,
                 today: next_day == chrono::Local::now().date_naive(),
-                tasks: None,
+                tasks,
             });
         }
         self.days = temp;
@@ -140,7 +177,7 @@ impl Day {
     pub fn is_today(&self) -> bool {
         self.today
     }
-    pub fn get_tasks(&self) -> &Option<Vec<String>>{
+    pub fn get_tasks(&self) -> &Option<Value> {
         &self.tasks
     }
 }
