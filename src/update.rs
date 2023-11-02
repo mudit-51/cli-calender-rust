@@ -9,13 +9,13 @@ pub fn udpate_0(app: &mut App) {
             if key.kind == KeyEventKind::Press {
                 match key.code {
                     event::KeyCode::Char(x) => match x {
-                        '!' => app.select_page(2),
-                        '@' => app.select_page(2),
-                        '#' => app.select_page(2),
-                        '$' => app.select_page(2),
-                        '%' => app.select_page(2),
-                        '^' => app.select_page(2),
-                        '&' => app.select_page(2),
+                        '!' => app.select_page(2,0),
+                        '@' => app.select_page(2,1),
+                        '#' => app.select_page(2,2),
+                        '$' => app.select_page(2,3),
+                        '%' => app.select_page(2,4),
+                        '^' => app.select_page(2,5),
+                        '&' => app.select_page(2,6),
                         _ => app.text_push(x),
                     },
                     event::KeyCode::Left => {
@@ -47,10 +47,11 @@ pub fn update_1(app: &mut App) {
         if let Event::Key(key) = event::read().unwrap() {
             if key.kind == KeyEventKind::Press {
                 match key.code {
+                    event::KeyCode::Enter => app.add_task(),
                     event::KeyCode::Char(x) => app.text_push(x),
                     event::KeyCode::Backspace => app.text_pop(),
                     event::KeyCode::Delete => app.quit(),
-                    event::KeyCode::Esc => app.select_page(0),
+                    event::KeyCode::Esc => app.select_page(0,0),
                     _ => {}
                 }
             }

@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::fs::{self, File};
 
 use chrono::{prelude::*, Days, Months};
 use serde_json::Value;
@@ -10,6 +10,7 @@ pub struct App {
     days: Vec<Day>,
     scroll_state: (u16, u16),
     task_json: serde_json::Value,
+    select_page: usize,
 }
 
 pub struct Day {
@@ -49,10 +50,14 @@ impl App {
             days: temp,
             scroll_state: (0, 0),
             task_json: json,
+            select_page: 0,
         }
     }
     pub fn get_page_text(&self) -> String {
         self.page_text.clone()
+    }
+    pub fn set_page_text(&mut self, text: String) {
+        self.page_text = text;
     }
     pub fn text_push(&mut self, c: char) {
         self.page_text.push(c)
@@ -68,9 +73,12 @@ impl App {
     }
     pub fn quit(&mut self) {
         self.should_quit = true;
+        let new_json = serde_json::to_string_pretty(&self.task_json).unwrap();
+        fs::write("data.json", new_json).expect("Error while trying to save file");
     }
-    pub fn select_page(&mut self, i: i32) {
+    pub fn select_page(&mut self, i: i32, target_day: usize) {
         self.page = i;
+        self.select_page = target_day;
         self.page_text.clear();
     }
     pub fn get_page(&self) -> i32 {
@@ -167,6 +175,35 @@ impl App {
             });
         }
         self.days = temp;
+    }
+    pub fn add_task(&mut self) {
+        if self.page_text.len() == 0 {
+            self.page = 0;
+            return;
+        };
+
+        let x = self
+            .days
+            .get(self.select_page)
+            .expect("Fatal error occured");
+        let json = self.task_json.as_object_mut().unwrap();
+
+        match json.get_mut(&x.date.to_string()) {
+            Some(d) => {
+                d.as_array_mut()
+                    .unwrap()
+                    .push(Value::String(String::from(&self.page_text)));
+            }
+            None => {
+                json.insert(
+                    x.date.to_string(),
+                    Value::Array(vec![Value::String(String::from(&self.page_text))]),
+                );
+            }
+        }
+
+        self.page_text = String::new();
+        self.page = 0;
     }
 }
 
