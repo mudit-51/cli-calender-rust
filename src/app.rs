@@ -10,7 +10,7 @@ pub struct App {
     days: Vec<Day>,
     scroll_state: (u16, u16),
     task_json: serde_json::Value,
-    select_page: usize,
+    day_task_add: usize,
 }
 
 pub struct Day {
@@ -50,7 +50,7 @@ impl App {
             days: temp,
             scroll_state: (0, 0),
             task_json: json,
-            select_page: 0,
+            day_task_add: 0,
         }
     }
     pub fn get_page_text(&self) -> String {
@@ -78,7 +78,7 @@ impl App {
     }
     pub fn select_page(&mut self, i: i32, target_day: usize) {
         self.page = i;
-        self.select_page = target_day;
+        self.day_task_add = target_day;
         self.page_text.clear();
     }
     pub fn get_page(&self) -> i32 {
@@ -182,27 +182,27 @@ impl App {
             return;
         };
 
-        let x = self
+        let target_day = self
             .days
-            .get(self.select_page)
+            .get(self.day_task_add)
             .expect("Fatal error occured");
-        let json = self.task_json.as_object_mut().unwrap();
+        
+        let json_map = self.task_json.as_object_mut().unwrap();
 
-        match json.get_mut(&x.date.to_string()) {
+        match json_map.get_mut(&target_day.date.to_string()) {
             Some(d) => {
                 d.as_array_mut()
                     .unwrap()
                     .push(Value::String(String::from(&self.page_text)));
             }
             None => {
-                json.insert(
-                    x.date.to_string(),
+                json_map.insert(
+                    target_day.date.to_string(),
                     Value::Array(vec![Value::String(String::from(&self.page_text))]),
                 );
             }
         }
-
-        self.page_text = String::new();
+        self.page_text.clear();
         self.page = 0;
     }
 }

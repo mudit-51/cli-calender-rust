@@ -16,7 +16,7 @@ pub fn udpate_0(app: &mut App) {
                         '%' => app.select_page(2,4),
                         '^' => app.select_page(2,5),
                         '&' => app.select_page(2,6),
-                        _ => app.text_push(x),
+                        _ => {},
                     },
                     event::KeyCode::Left => {
                         if key.modifiers.contains(KeyModifiers::SHIFT) {
