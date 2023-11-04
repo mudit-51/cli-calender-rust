@@ -10,10 +10,10 @@ use crate::app::App;
 pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app: &mut App) {
     let inner = Layout::default()
         .direction(ratatui::prelude::Direction::Vertical)
-        .constraints(vec![Constraint::Percentage(10), Constraint::Percentage(90)])
+        .constraints(vec![Constraint::Percentage(20), Constraint::Percentage(80)])
         .split(f.size());
     f.render_widget(
-        Paragraph::new("Add task page")
+        Paragraph::new("Add task page\nStart entering text below\nPress 'Enter' to finally add")
             .alignment(ratatui::prelude::Alignment::Center)
             .block(Block::default().borders(Borders::ALL).fg(Color::LightGreen)),
         inner[0],

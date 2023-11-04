@@ -186,21 +186,18 @@ impl App {
             .days
             .get(self.day_task_add)
             .expect("Fatal error occured");
-        
+
         let json_map = self.task_json.as_object_mut().unwrap();
 
-        match json_map.get_mut(&target_day.date.to_string()) {
-            Some(d) => {
-                d.as_array_mut()
-                    .unwrap()
-                    .push(Value::String(String::from(&self.page_text)));
-            }
-            None => {
-                json_map.insert(
-                    target_day.date.to_string(),
-                    Value::Array(vec![Value::String(String::from(&self.page_text))]),
-                );
-            }
+        if let Some(d) = json_map.get_mut(&target_day.date.to_string()) {
+            d.as_array_mut()
+                .unwrap()
+                .push(Value::String(String::from(&self.page_text)));
+        } else {
+            json_map.insert(
+                target_day.date.to_string(),
+                Value::Array(vec![Value::String(String::from(&self.page_text))]),
+            );
         }
         self.page_text.clear();
         self.page = 0;
