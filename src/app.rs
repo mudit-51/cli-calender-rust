@@ -104,66 +104,19 @@ impl App {
             None => self.scroll_state = (self.scroll_state.0, temp),
         }
     }
-    pub fn next_week(&mut self) {
+    pub fn next(&mut self, time: i32){
         let obj = self.task_json.as_object().unwrap();
 
         let mut temp: Vec<Day> = Vec::new();
         for i in &self.days {
-            let next_day = i.date.checked_add_days(Days::new(7)).unwrap();
-            let tasks = match obj.get(&next_day.to_string()) {
-                Some(x) => Some(x.clone().to_owned()),
-                None => None,
+            let next_day = match time {
+                7 => i.date.checked_add_days(Days::new(7)).unwrap(),
+                30 => i.date.checked_add_months(Months::new(1)).unwrap(),
+                -7 => i.date.checked_sub_days(Days::new(7)).unwrap(),
+                -30 => i.date.checked_sub_months(Months::new(1)).unwrap(),
+                _ => i.date,
             };
-            temp.push(Day {
-                date: next_day,
-                today: next_day == chrono::Local::now().date_naive(),
-                tasks,
-            });
-        }
-        self.days = temp;
-    }
-    pub fn next_month(&mut self) {
-        let obj = self.task_json.as_object().unwrap();
-
-        let mut temp: Vec<Day> = Vec::new();
-        for i in &self.days {
-            let next_day = i.date.checked_add_months(Months::new(1)).unwrap();
-            let tasks = match obj.get(&next_day.to_string()) {
-                Some(x) => Some(x.clone().to_owned()),
-                None => None,
-            };
-            temp.push(Day {
-                date: next_day,
-                today: next_day == chrono::Local::now().date_naive(),
-                tasks,
-            });
-        }
-        self.days = temp;
-    }
-    pub fn prev_week(&mut self) {
-        let obj = self.task_json.as_object().unwrap();
-
-        let mut temp: Vec<Day> = Vec::new();
-        for i in &self.days {
-            let next_day = i.date.checked_sub_days(Days::new(7)).unwrap();
-            let tasks = match obj.get(&next_day.to_string()) {
-                Some(x) => Some(x.clone().to_owned()),
-                None => None,
-            };
-            temp.push(Day {
-                date: next_day,
-                today: next_day == chrono::Local::now().date_naive(),
-                tasks,
-            });
-        }
-        self.days = temp;
-    }
-    pub fn prev_month(&mut self) {
-        let obj = self.task_json.as_object().unwrap();
-
-        let mut temp: Vec<Day> = Vec::new();
-        for i in &self.days {
-            let next_day = i.date.checked_sub_months(Months::new(1)).unwrap();
+            // let next_day = i.date.checked_add_days(Days::new(7)).unwrap();
             let tasks = match obj.get(&next_day.to_string()) {
                 Some(x) => Some(x.clone().to_owned()),
                 None => None,
@@ -201,6 +154,7 @@ impl App {
         }
         self.page_text.clear();
         self.page = 0;
+        self.next(0);
     }
 }
 

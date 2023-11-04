@@ -13,7 +13,7 @@ pub fn ui(mut terminal: Terminal<CrosstermBackend<std::io::Stderr>>, app: &mut A
                 terminal.draw(|f| page1::render(f, app))?;
                 update::udpate_0(app);
             }
-            2 => {
+            1 => {
                 terminal.draw(|f| addtask::render(f, app))?;
                 update::update_1(app);
             }

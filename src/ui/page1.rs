@@ -27,9 +27,8 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
         let inner = Layout::default()
             .direction(Direction::Vertical)
             .constraints(vec![
-                Constraint::Percentage(5),
-                Constraint::Percentage(10),
-                Constraint::Percentage(85),
+                Constraint::Percentage(12),
+                Constraint::Percentage(88),
             ])
             .horizontal_margin(1)
             .vertical_margin(1)
@@ -45,33 +44,34 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
             }
 
             f.render_widget(
-                Paragraph::new(x.get_date().weekday().to_string()).alignment(Alignment::Center),
+                Paragraph::new(format!(
+                    "{}\n{}",
+                    x.get_date().weekday().to_string(),
+                    x.get_date().to_string()
+                ))
+                .alignment(Alignment::Center)
+                .block(Block::default().borders(Borders::BOTTOM)),
                 inner[0],
-            );
-            f.render_widget(
-                Paragraph::new(x.get_date().to_string())
-                    .alignment(Alignment::Center)
-                    .block(Block::default().borders(Borders::BOTTOM)),
-                inner[1],
             );
             if let Some(task) = x.get_tasks() {
                 let task_text = task.as_array().unwrap();
                 let mut z: Vec<Line> = Vec::new();
                 for i in task_text {
+                    // z.push(Line::styled(i.to_string(), Style::default().bg(Color::White)));
                     z.push(Line::from(i.to_string()));
                 }
                 f.render_widget(
                     Paragraph::new(z)
                         .wrap(Wrap { trim: false })
                         .scroll(app.get_scroll()),
-                    inner[2],
+                    inner[1],
                 );
             } else {
                 f.render_widget(
                     Paragraph::new("No tasks scheduled")
                         .wrap(Wrap { trim: false })
                         .scroll(app.get_scroll()),
-                    inner[2],
+                    inner[1],
                 );
             }
         } else {

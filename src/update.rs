@@ -9,27 +9,27 @@ pub fn udpate_0(app: &mut App) {
             if key.kind == KeyEventKind::Press {
                 match key.code {
                     event::KeyCode::Char(x) => match x {
-                        '!' => app.select_page(2,0),
-                        '@' => app.select_page(2,1),
-                        '#' => app.select_page(2,2),
-                        '$' => app.select_page(2,3),
-                        '%' => app.select_page(2,4),
-                        '^' => app.select_page(2,5),
-                        '&' => app.select_page(2,6),
+                        '1' => app.select_page(1,0),
+                        '2' => app.select_page(1,1),
+                        '3' => app.select_page(1,2),
+                        '4' => app.select_page(1,3),
+                        '5' => app.select_page(1,4),
+                        '6' => app.select_page(1,5),
+                        '7' => app.select_page(1,6),
                         _ => {},
                     },
                     event::KeyCode::Left => {
                         if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            app.prev_month();
+                            app.next(-30);
                         } else {
-                            app.prev_week();
+                            app.next(-7);
                         }
                     }
                     event::KeyCode::Right => {
                         if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            app.next_month();
+                            app.next(30);
                         } else {
-                            app.next_week();
+                            app.next(7);
                         }
                     }
                     event::KeyCode::Up => app.set_scroll_vertical(-3),
