@@ -1,6 +1,6 @@
 use std::fs::{self, File};
 
-use chrono::{prelude::*, Days, Months};
+use chrono::{prelude::*, Days};
 use serde_json::Value;
 
 pub struct App {
@@ -111,12 +111,11 @@ impl App {
         for i in &self.days {
             let next_day = match time {
                 7 => i.date.checked_add_days(Days::new(7)).unwrap(),
-                30 => i.date.checked_add_months(Months::new(1)).unwrap(),
+                28 => i.date.checked_add_days(Days::new(28)).unwrap(),
                 -7 => i.date.checked_sub_days(Days::new(7)).unwrap(),
-                -30 => i.date.checked_sub_months(Months::new(1)).unwrap(),
+                -28 => i.date.checked_sub_days(Days::new(28)).unwrap(),
                 _ => i.date,
             };
-            // let next_day = i.date.checked_add_days(Days::new(7)).unwrap();
             let tasks = match obj.get(&next_day.to_string()) {
                 Some(x) => Some(x.clone().to_owned()),
                 None => None,

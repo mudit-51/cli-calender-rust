@@ -20,14 +20,14 @@ pub fn udpate_0(app: &mut App) {
                     },
                     event::KeyCode::Left => {
                         if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            app.next(-30);
+                            app.next(-28);
                         } else {
                             app.next(-7);
                         }
                     }
                     event::KeyCode::Right => {
                         if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            app.next(30);
+                            app.next(28);
                         } else {
                             app.next(7);
                         }
