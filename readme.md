@@ -8,3 +8,5 @@ Navigate with left and right arrow keys. Scroll with up and down arrow keys.
 Press 1-7 to add tasks, and SHIFT+1-7 to clear tasks. 
 
 Will add cleaner README later, along with a few more features. 
+
+![Screenshot of Application](image.png)
