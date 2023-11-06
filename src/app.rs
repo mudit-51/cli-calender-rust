@@ -26,6 +26,12 @@ impl App {
         let today = chrono::Local::now().date_naive();
         let mut day = today.week(Weekday::Mon).first_day();
 
+        if let Err(_) = File::open("data.json") {
+            if let Err(_) = fs::write("data.json", "{}") {
+                panic!("Error while creating data.json file")
+            }
+        }
+        
         let json: serde_json::Value =
             serde_json::from_reader(File::open("data.json").unwrap()).unwrap();
 
@@ -104,7 +110,7 @@ impl App {
             None => self.scroll_state = (self.scroll_state.0, temp),
         }
     }
-    pub fn next(&mut self, time: i32){
+    pub fn next(&mut self, time: i32) {
         let obj = self.task_json.as_object().unwrap();
 
         let mut temp: Vec<Day> = Vec::new();
@@ -155,13 +161,13 @@ impl App {
         self.page = 0;
         self.next(0);
     }
-    pub fn clear_tasks(&mut self, day: usize){
+    pub fn clear_tasks(&mut self, day: usize) {
         self.day_task_add = day;
 
         let target_day = self
-        .days
-        .get(self.day_task_add)
-        .expect("Fatal error occured");
+            .days
+            .get(self.day_task_add)
+            .expect("Fatal error occured");
 
         let json_map = self.task_json.as_object_mut().unwrap();
 
