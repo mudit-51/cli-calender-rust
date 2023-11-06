@@ -38,7 +38,7 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
             let block = Block::default().borders(Borders::ALL);
 
             if x.is_today() {
-                f.render_widget(block.fg(Color::LightMagenta), outer[i]);
+                f.render_widget(block.fg(Color::Green), outer[i]);
             } else {
                 f.render_widget(block, outer[i]);
             }
@@ -57,8 +57,9 @@ pub fn render(f: &mut ratatui::Frame<'_, CrosstermBackend<std::io::Stderr>>, app
                 let task_text = task.as_array().unwrap();
                 let mut z: Vec<Line> = Vec::new();
                 for i in task_text {
-                    // z.push(Line::styled(i.to_string(), Style::default().bg(Color::White)));
-                    z.push(Line::from(i.to_string()));
+                    let mut temp_str = i.to_string();
+                    temp_str = temp_str.trim_matches('"').to_string();
+                    z.push(Line::from(temp_str));
                 }
                 f.render_widget(
                     Paragraph::new(z)
