@@ -155,6 +155,19 @@ impl App {
         self.page = 0;
         self.next(0);
     }
+    pub fn clear_tasks(&mut self, day: usize){
+        self.day_task_add = day;
+
+        let target_day = self
+        .days
+        .get(self.day_task_add)
+        .expect("Fatal error occured");
+
+        let json_map = self.task_json.as_object_mut().unwrap();
+
+        json_map.remove(&target_day.date.to_string());
+        self.next(0);
+    }
 }
 
 impl Day {
