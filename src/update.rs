@@ -3,6 +3,17 @@ use std::time::Duration;
 
 use crate::app::App;
 
+//This file behaves as the "controller" for the application.
+
+//Depending on what page is currently displayed in the terminal, it calls the corresponding function.
+
+//Each function listens to keystrokes and possible actions that could be taken by the use, and then calls the 
+//necessary method on "app" variable in order to perform the necessary action. 
+
+//Both functions poll for a keystroke every 500ms
+
+
+//This function is for the main page of the application, when all the tasks are displayed. 
 pub fn udpate_0(app: &mut App) {
     if poll(Duration::from_millis(500)).unwrap() {
         if let Event::Key(key) = event::read().unwrap() {
@@ -41,7 +52,6 @@ pub fn udpate_0(app: &mut App) {
                     }
                     event::KeyCode::Up => app.set_scroll_vertical(-3),
                     event::KeyCode::Down => app.set_scroll_vertical(3),
-                    event::KeyCode::Backspace => app.text_pop(),
                     event::KeyCode::Delete => app.quit(),
                     _ => {}
                 }
@@ -49,6 +59,8 @@ pub fn udpate_0(app: &mut App) {
         }
     }
 }
+
+//This function is for the add task page of the application. 
 pub fn update_1(app: &mut App) {
     if poll(Duration::from_millis(500)).unwrap() {
         if let Event::Key(key) = event::read().unwrap() {
