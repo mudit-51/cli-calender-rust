@@ -5,11 +5,11 @@ A simple calender app written in **Rust**, using **Ratatui**.
 The application is modeled on my understanding of the MVC architecture. 
 
 ### Usage Instructions
-Navigate with left and right arrow keys.  
-Scroll with up and down arrow keys.  
-Press 1-7 to add tasks, and SHIFT+1-7 to clear tasks.  
-Press Delete to exit application.  
-Press Escape while adding tasks to cancel addition.
+* Navigate with left and right arrow keys.  
+* Scroll with up and down arrow keys.  
+* Press 1-7 to add tasks, and SHIFT+1-7 to clear tasks.  
+* Press Delete to exit application.  
+* Press Escape while adding tasks to cancel addition.
 
 ### Running locally
 
