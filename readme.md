@@ -33,4 +33,4 @@ The application is modeled on my understanding of the MVC architecture.
 
 
 
-![Screenshot of Application](image.png)
+![Screenshot of Application](image.png) 
